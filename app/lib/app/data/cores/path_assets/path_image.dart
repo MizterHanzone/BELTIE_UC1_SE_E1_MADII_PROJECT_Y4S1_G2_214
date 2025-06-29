@@ -1,0 +1,1 @@
+const logoApp = "lib/app/data/assets/images/logo_on_ui.png";
