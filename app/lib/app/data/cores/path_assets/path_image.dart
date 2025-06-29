@@ -1,1 +1,1 @@
-const logoApp = "assets/images/logo.png";
+const logoApp = "assets/images/logo.jpg";

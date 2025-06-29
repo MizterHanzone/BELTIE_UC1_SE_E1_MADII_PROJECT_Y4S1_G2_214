@@ -1,0 +1,44 @@
+import 'package:app/app/data/cores/path_assets/path_color.dart';
+import 'package:flutter/material.dart';
+
+class TextFieldWidget extends StatelessWidget {
+  final String hintText;
+  final IconData icon;
+  final TextEditingController? controller;
+  final ValueChanged<String>? onChanged;
+  final bool isIconPrefix; // New: control icon side
+  final Color iconColor;   // Optional: custom icon color
+
+  const TextFieldWidget({
+    super.key,
+    required this.hintText,
+    this.icon = Icons.person,
+    this.controller,
+    this.onChanged,
+    this.isIconPrefix = false, // default to right side (suffix)
+    this.iconColor = Colors.grey,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      decoration: BoxDecoration(
+        border: Border.all(color: OneHubColor.blackGrey),
+        borderRadius: BorderRadius.circular(30),
+      ),
+      child: TextField(
+        controller: controller,
+        onChanged: onChanged,
+        decoration: InputDecoration(
+          hintText: hintText,
+          border: InputBorder.none,
+          contentPadding: const EdgeInsets.symmetric(vertical: 15),
+          prefixIcon: isIconPrefix ? Icon(icon, color: iconColor) : null,
+          suffixIcon: isIconPrefix ? null : Icon(icon, color: iconColor),
+        ),
+      ),
+    );
+  }
+}
