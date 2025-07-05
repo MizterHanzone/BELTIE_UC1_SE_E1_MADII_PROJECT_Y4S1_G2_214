@@ -6,8 +6,8 @@ class TextFieldWidget extends StatelessWidget {
   final IconData icon;
   final TextEditingController? controller;
   final ValueChanged<String>? onChanged;
-  final bool isIconPrefix; // New: control icon side
-  final Color iconColor;   // Optional: custom icon color
+  final bool isIconPrefix;
+  final Color iconColor;
 
   const TextFieldWidget({
     super.key,
@@ -15,7 +15,7 @@ class TextFieldWidget extends StatelessWidget {
     this.icon = Icons.person,
     this.controller,
     this.onChanged,
-    this.isIconPrefix = false, // default to right side (suffix)
+    this.isIconPrefix = false,
     this.iconColor = Colors.grey,
   });
 
