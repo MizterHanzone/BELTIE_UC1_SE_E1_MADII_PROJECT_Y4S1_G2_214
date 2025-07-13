@@ -10,3 +10,4 @@ const iconHeart = "assets/icons/heart.png";
 const iconArrowLeft = "assets/icons/arrow_left.png";
 const iconArrowRight = "assets/icons/arrow_right.png";
 const iconCross = "assets/icons/cross.png";
+const iconGoogle = "assets/icons/google.png";

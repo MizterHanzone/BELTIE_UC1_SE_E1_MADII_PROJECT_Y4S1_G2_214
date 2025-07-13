@@ -1,23 +1,18 @@
 import 'package:get/get.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:app/app/routes/app_pages.dart';
 
 class HomeController extends GetxController {
-  //TODO: Implement HomeController
+  final supabase = Supabase.instance.client;
 
-  final count = 0.obs;
-  @override
-  void onInit() {
-    super.onInit();
+  Future<void> logout() async {
+    try {
+      await supabase.auth.signOut();
+      Get.offAllNamed(Routes.LOGIN);
+      Get.snackbar("Logout", "Logout successfully!");
+    } catch (e) {
+      print("Logout error: $e");
+      Get.snackbar('Logout Failed', e.toString());
+    }
   }
-
-  @override
-  void onReady() {
-    super.onReady();
-  }
-
-  @override
-  void onClose() {
-    super.onClose();
-  }
-
-  void increment() => count.value++;
 }

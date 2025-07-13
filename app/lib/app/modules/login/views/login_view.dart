@@ -1,5 +1,6 @@
 import 'package:app/app/data/cores/path_assets/path_image.dart';
 import 'package:app/app/data/cores/widgets/button_widget.dart';
+import 'package:app/app/data/cores/widgets/text_field_email_widget.dart';
 import 'package:app/app/data/cores/widgets/text_field_password_widget.dart';
 import 'package:app/app/data/cores/widgets/text_field_widget.dart';
 import 'package:app/app/routes/app_pages.dart';
@@ -16,7 +17,7 @@ class LoginView extends GetView<LoginController> {
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
 
-    final TextEditingController usernameController = TextEditingController();
+    final TextEditingController emailController = TextEditingController();
     final TextEditingController passwordController = TextEditingController();
 
     return Scaffold(
@@ -39,11 +40,9 @@ class LoginView extends GetView<LoginController> {
               SizedBox(height: height * 0.1,),
               SizedBox(
                 width: width * 0.8,
-                child: TextFieldWidget(
-                  hintText: "Username",
-                  icon: Icons.person,
-                  controller: usernameController,
-                ),
+                child: TextFieldEmailWidget(
+                  controller: emailController,
+                )
               ),
               SizedBox(
                 width: width * 0.8,
@@ -52,16 +51,33 @@ class LoginView extends GetView<LoginController> {
                   controller: passwordController,
                 ),
               ),
+              SizedBox(height: 10,),
+              SizedBox(
+                width: width * 0.8,
+                child: Obx(() => CustomButtonWidget(
+                  text: 'Login',
+                  icon: Icons.login,
+                  backgroundColor: OneHubColor.orane,
+                  textColor: OneHubColor.black,
+                  loading: controller.isLoading.value,
+                  onPressed: () => controller.handleLogin(
+                    email: emailController.text.trim(),
+                    password: passwordController.text.trim(),
+                  ),
+                )),
+              ),
               SizedBox(
                 width: width * 0.8,
                 child: Align(
                   alignment: Alignment.centerRight,
                   child: TextButton(
-                      onPressed: (){},
+                      onPressed: (){
+                        Get.toNamed(Routes.FORGOT_PASSWORD);
+                      },
                       child: Text(
-                          "Forgot password?",
+                        "Forgot password?",
                         style: TextStyle(
-                            color: OneHubColor.blackGrey
+                            color: OneHubColor.orane
                         ),
                       )
                   ),
@@ -69,26 +85,25 @@ class LoginView extends GetView<LoginController> {
               ),
               SizedBox(
                 width: width * 0.8,
-                child: CustomButtonWidget(
-                  text: 'Login',
-                  icon: Icons.login,
-                  backgroundColor: OneHubColor.orane,
-                  textColor: OneHubColor.white,
-                  onPressed: () {},
-                ),
-              ),
-              SizedBox(
-                width: width * 0.8,
-                child: Align(
-                  alignment: Alignment.centerRight,
-                  child: TextButton(
-                      onPressed: () => Get.toNamed(Routes.REGISTER),
-                      child: Text(
-                          "Don't have account? Register",
+                child: TextButton(
+                  onPressed: () => Get.toNamed(Routes.REGISTER),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Don't have account?",
                         style: TextStyle(
-                          color: OneHubColor.blackGrey
+                            color: OneHubColor.black
                         ),
                       ),
+                      SizedBox(width: 10,),
+                      Text(
+                        "Register",
+                        style: TextStyle(
+                            color: OneHubColor.orane
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
