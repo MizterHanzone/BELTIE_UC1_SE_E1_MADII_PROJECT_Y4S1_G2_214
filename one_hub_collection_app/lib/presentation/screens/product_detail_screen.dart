@@ -1,7 +1,12 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:one_hub_collection_app/core/constant/url_connection.dart';
 import 'package:one_hub_collection_app/core/theme/color.dart';
 import 'package:one_hub_collection_app/core/theme/icon.dart';
+import 'package:one_hub_collection_app/data/controller/product_controller/product_controller.dart';
 
 class ProductDetailScreen extends StatefulWidget {
   const ProductDetailScreen({super.key});
@@ -16,6 +21,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     'assets/images/shirt.png',
     'assets/images/sport.png',
   ];
+
+  final product = Get.arguments;
+  final OHProductController productController = Get.put(OHProductController());
 
   String selectedColor = '';
   String selectedSize = 'lue';
@@ -92,7 +100,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "Shirt",
+                    product.name,
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -100,7 +108,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     ),
                   ),
                   Text(
-                    "\$249.99",
+                    "\$${product.price}",
                     style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.bold,
@@ -117,30 +125,24 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 ),
                 child: Column(
                   children: [
-                    CarouselSlider(
-                      options: CarouselOptions(
-                        height: 250.0,
-                        autoPlay: true,
-                        enlargeCenterPage: true,
-                        aspectRatio: 16 / 9,
-                        viewportFraction: 0.8,
-                      ),
-                      items: imageList.map((imagePath) {
-                        return Builder(
-                          builder: (BuildContext context) {
-                            return Padding(
-                              padding: const EdgeInsets.all(20.0),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(16),
-                                child: Image.asset(
-                                  imagePath,
-                                  fit: BoxFit.cover,
-                                ),
+                    Center(
+                      child: SizedBox(
+                        width: width * 0.5,
+                        child: Hero(
+                          tag: product.id,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 20),
+                            child: CachedNetworkImage(
+                              height: 200,
+                              imageUrl: "$portPhoto${product.photo}",
+                              placeholder: (context, url) => const Center(
+                                child: CircularProgressIndicator(strokeWidth: 2),
                               ),
-                            );
-                          },
-                        );
-                      }).toList(),
+                              errorWidget: (context, url, error) => const Icon(Icons.error),
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
                   ],
                 ),

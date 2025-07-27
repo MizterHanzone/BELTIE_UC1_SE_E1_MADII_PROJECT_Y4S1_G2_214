@@ -1,8 +1,13 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:one_hub_collection_app/core/constant/url_connection.dart';
 import 'package:one_hub_collection_app/core/theme/color.dart';
 import 'package:one_hub_collection_app/core/theme/icon.dart';
 import 'package:one_hub_collection_app/core/theme/image.dart';
+import 'package:one_hub_collection_app/data/controller/category_controller/category_controller.dart';
+import 'package:one_hub_collection_app/data/controller/product_controller/product_controller.dart';
+import 'package:one_hub_collection_app/presentation/screens/product_filter_screen.dart';
 import 'package:one_hub_collection_app/route/app_route.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -13,6 +18,10 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+
+  final OHCategoryController categoriesController = Get.put(OHCategoryController());
+  final OHProductController productController = Get.put(OHProductController());
+
   @override
   Widget build(BuildContext context) {
 
@@ -102,61 +111,70 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               SizedBox(height: 20,),
-              SizedBox(
-                height: 120,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: 20,
-                  itemBuilder: (context, index) {
-                    return GestureDetector(
-                      onTap: (){
-                        Get.toNamed(AppRoutes.productFilter);
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        child: Center(
-                          child: Column(
-                            children: [
-                              Container(
-                                width: 80,
-                                height: 80,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(50),
-                                  color: OneHubColor.white,
-                                  boxShadow: const [
-                                    BoxShadow(
-                                      color: Colors.grey,
-                                      offset: Offset(0, 4),
-                                      blurRadius: 6,
-                                      spreadRadius: -2,
+              Obx(() {
+                if(categoriesController.categories.isEmpty){
+                  return Center(
+                    child: Text("Not found categories"),
+                  );
+                }
+                  return SizedBox(
+                    height: 120,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: categoriesController.categories.length,
+                      itemBuilder: (context, index) {
+                        final categories = categoriesController.categories[index];
+                        return GestureDetector(
+                          onTap: (){
+                            Get.to(ProductFilterScreen(category: categories));
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            child: Center(
+                              child: Column(
+                                children: [
+                                  Container(
+                                    width: 80,
+                                    height: 80,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(50),
+                                      color: OneHubColor.white,
+                                      boxShadow: const [
+                                        BoxShadow(
+                                          color: Colors.grey,
+                                          offset: Offset(0, 4),
+                                          blurRadius: 6,
+                                          spreadRadius: -2,
+                                        ),
+                                      ],
                                     ),
-                                  ],
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(15.0),
-                                  child: Center(
-                                    child: Image.asset(
-                                      "assets/images/jacket.png"
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(15.0),
+                                      child: Center(
+                                        child: CachedNetworkImage(
+                                            imageUrl: "$portPhoto${categories.photo}",
+                                        ),
+                                      ),
                                     ),
                                   ),
-                                ),
+                                  SizedBox(height: 10,),
+                                  Text(
+                                    categories.name,
+                                    style: TextStyle(
+                                      fontFamily: 'TikTokSans',
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 12
+                                    ),
+                                  )
+                                ],
                               ),
-                              SizedBox(height: 10,),
-                              Text(
-                                "ONE",
-                                style: TextStyle(
-                                  fontFamily: 'TikTokSans',
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 12
-                                ),
-                              )
-                            ],
+                            ),
                           ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
+                        );
+                      },
+                    ),
+                  );
+                }
               ),
               SizedBox(height: 10,),
               PreferredSize(
@@ -176,19 +194,33 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               SizedBox(height: 10,),
-              Expanded(
-                child: GridView.builder(
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              Obx(() {
+                if (productController.isLoading.value) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                if (productController.products.isEmpty) {
+                  return const Center(child: Text("No products found"));
+                }
+
+                return Expanded(
+                  child: GridView.builder(
+                    shrinkWrap: true,
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
                       crossAxisSpacing: 10,
                       mainAxisSpacing: 10,
                       childAspectRatio: 0.75,
                     ),
-                    itemBuilder: (context, index){
+                    itemCount: productController.products.length,
+                    itemBuilder: (context, index) {
+                      final product = productController.products[index];
                       return GestureDetector(
-                        onTap: (){
-                          Get.toNamed(AppRoutes.productDetail);
-                        },
+                        onTap: () => Get.toNamed(
+                          AppRoutes.productDetail,
+                          arguments: product,
+                          preventDuplicates: false,
+                        ),
                         child: Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(20),
@@ -208,10 +240,14 @@ class _HomeScreenState extends State<HomeScreen> {
                               children: [
                                 Column(
                                   children: [
-                                    Image.asset(
-                                      "assets/images/jacket.png"
+                                    CachedNetworkImage(
+                                      imageUrl: "$portPhoto${product.photo}",
+                                      placeholder: (context, url) => const CircularProgressIndicator(),
+                                      errorWidget: (context, url, error) => const Icon(Icons.error),
+                                      width: 100,
+                                      height: 150,
                                     ),
-                                    SizedBox(height: 10,),
+                                    const SizedBox(height: 10),
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
@@ -219,19 +255,19 @@ class _HomeScreenState extends State<HomeScreen> {
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              "Shirt",
-                                              style: TextStyle(
+                                              product.name,
+                                              style: const TextStyle(
                                                 fontSize: 15,
-                                                fontWeight: FontWeight.bold
+                                                fontWeight: FontWeight.bold,
                                               ),
                                             ),
                                             Text(
-                                                "\$249.99",
-                                              style: TextStyle(
-                                                  fontSize: 15,
-                                                  fontWeight: FontWeight.bold
+                                              "\$${product.price}",
+                                              style: const TextStyle(
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.bold,
                                               ),
-                                            )
+                                            ),
                                           ],
                                         ),
                                         Container(
@@ -239,7 +275,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           height: 30,
                                           decoration: BoxDecoration(
                                             borderRadius: BorderRadius.circular(50),
-                                            color: OneHubColor.orange
+                                            color: OneHubColor.orange,
                                           ),
                                           child: Padding(
                                             padding: const EdgeInsets.all(8.0),
@@ -257,24 +293,25 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                                 Positioned(
                                   top: 0,
-                                    right: 0,
-                                    child: GestureDetector(
-                                      onTap: (){},
-                                      child: Image.asset(
-                                        iconHeart,
-                                        width: 20,
-                                        color: OneHubColor.blackGrey,
-                                      ),
-                                    )
+                                  right: 0,
+                                  child: GestureDetector(
+                                    onTap: () {},
+                                    child: Image.asset(
+                                      iconHeart,
+                                      width: 20,
+                                      color: OneHubColor.blackGrey,
+                                    ),
+                                  ),
                                 )
                               ],
                             ),
                           ),
                         ),
                       );
-                    }
-                ),
-              ),
+                    },
+                  ),
+                );
+              })
             ],
           ),
         ),

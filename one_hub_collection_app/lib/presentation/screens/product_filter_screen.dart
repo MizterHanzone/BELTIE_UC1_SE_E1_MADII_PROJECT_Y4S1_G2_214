@@ -1,23 +1,51 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:one_hub_collection_app/core/constant/url_connection.dart';
 import 'package:one_hub_collection_app/core/theme/color.dart';
 import 'package:one_hub_collection_app/core/theme/icon.dart';
+import 'package:one_hub_collection_app/data/controller/product_controller/product_controller.dart';
+import 'package:one_hub_collection_app/data/model/category_model.dart';
 
 class ProductFilterScreen extends StatefulWidget {
-  const ProductFilterScreen({super.key});
+  final CategoryModel category;
+  const ProductFilterScreen({super.key, required this.category});
 
   @override
   State<ProductFilterScreen> createState() => _ProductFilterScreenState();
 }
 
 class _ProductFilterScreenState extends State<ProductFilterScreen> {
+
   @override
   Widget build(BuildContext context) {
-
     final width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;
+
+    final OHProductController productController = Get.put(OHProductController());
+
+    // Fetch products by category when the screen loads
+    productController.fetchProductsByCategory(widget.category.id);
 
     return Scaffold(
       appBar: AppBar(
         backgroundColor: OneHubColor.white,
+        leading: GestureDetector(
+          onTap: (){
+            Get.back();
+          },
+          child: SizedBox(
+            width: 60,
+            height: 56,
+            child: Center(
+              child: Image.asset(
+                iconPlus,
+                width: width * 0.06,
+                fit: BoxFit.contain,
+              ),
+            ),
+          ),
+        ),
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1.0),
           child: Padding(
@@ -31,6 +59,7 @@ class _ProductFilterScreenState extends State<ProductFilterScreen> {
       ),
       body: Container(
         width: width,
+        height: height,
         decoration: BoxDecoration(
           gradient: OneHubColor.linear1
         ),
@@ -53,7 +82,7 @@ class _ProductFilterScreenState extends State<ProductFilterScreen> {
                       ),
                       Spacer(),
                       Text(
-                        "Dress",
+                        widget.category.name,
                         style: TextStyle(
                             fontFamily: "TikTokSans",
                             fontSize: 15,
@@ -79,8 +108,8 @@ class _ProductFilterScreenState extends State<ProductFilterScreen> {
                         child: Padding(
                           padding: const EdgeInsets.all(15.0),
                           child: Center(
-                            child: Image.asset(
-                                "assets/images/jacket.png"
+                            child: CachedNetworkImage(
+                                imageUrl: "$portPhoto${widget.category.photo}"
                             ),
                           ),
                         ),
@@ -96,8 +125,10 @@ class _ProductFilterScreenState extends State<ProductFilterScreen> {
                   ),
                 ),
                 SizedBox(height: 20,),
-                ...List.generate(
-                    20, (index){
+                Obx(() {
+                  return Column(
+                    children: List.generate(productController.filteredProducts.length, (index) {
+                      final product = productController.filteredProducts[index];
                       return Padding(
                         padding: const EdgeInsets.only(top: 10),
                         child: Container(
@@ -105,15 +136,15 @@ class _ProductFilterScreenState extends State<ProductFilterScreen> {
                           height: 150,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(20),
-                              boxShadow: const [
-                                BoxShadow(
-                                  color: Colors.grey,
-                                  offset: Offset(0, 4),
-                                  blurRadius: 6,
-                                  spreadRadius: -2,
-                                ),
-                              ],
-                            color: OneHubColor.white
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Colors.grey,
+                                offset: Offset(0, 4),
+                                blurRadius: 6,
+                                spreadRadius: -2,
+                              ),
+                            ],
+                            color: OneHubColor.white,
                           ),
                           child: Stack(
                             children: [
@@ -137,11 +168,10 @@ class _ProductFilterScreenState extends State<ProductFilterScreen> {
                                     // Product Image
                                     ClipRRect(
                                       borderRadius: BorderRadius.circular(12),
-                                      child: Image.asset(
-                                        "assets/images/jacket.png",
+                                      child: CachedNetworkImage(
+                                          imageUrl: "$portPhoto${product.photo}",
                                         height: 100,
                                         width: 100,
-                                        fit: BoxFit.cover,
                                       ),
                                     ),
                                     const SizedBox(width: 16),
@@ -149,18 +179,18 @@ class _ProductFilterScreenState extends State<ProductFilterScreen> {
                                     Expanded(
                                       child: Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: const [
+                                        children: [
                                           Text(
-                                            "Dress",
+                                            product.name,
                                             style: TextStyle(
                                               fontFamily: "TikTokSans",
                                               fontSize: 20,
                                               fontWeight: FontWeight.bold,
                                             ),
                                           ),
-                                          SizedBox(height: 8),
+                                          const SizedBox(height: 8),
                                           Text(
-                                            "\$249.99",
+                                            "\$${product.price}",
                                             style: TextStyle(
                                               fontFamily: "TikTokSans",
                                               fontSize: 18,
@@ -180,7 +210,6 @@ class _ProductFilterScreenState extends State<ProductFilterScreen> {
                                 right: 32,
                                 child: Row(
                                   children: [
-                                    // Heart Icon
                                     Container(
                                       padding: EdgeInsets.all(8),
                                       decoration: BoxDecoration(
@@ -200,7 +229,6 @@ class _ProductFilterScreenState extends State<ProductFilterScreen> {
                                       ),
                                     ),
                                     const SizedBox(width: 12),
-                                    // Plus Icon
                                     Container(
                                       padding: EdgeInsets.all(8),
                                       decoration: BoxDecoration(
@@ -221,7 +249,9 @@ class _ProductFilterScreenState extends State<ProductFilterScreen> {
                           ),
                         ),
                       );
-                }),
+                    }),
+                  );
+                })
               ],
             ),
           ),

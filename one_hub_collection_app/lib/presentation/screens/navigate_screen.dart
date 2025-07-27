@@ -13,11 +13,11 @@ class NavigateScreen extends StatelessWidget {
 
   final BottomNavController navController = Get.put(BottomNavController());
 
-  final List<Widget> _screens = const [
+  final List<Widget> _screens = [
     HomeScreen(),
-    FavoriteScreen(),
-    CartScreen(),
-    ProfileScreen(),
+    const FavoriteScreen(),
+    const CartScreen(),
+    const ProfileScreen(),
   ];
 
   final List<String> iconPaths = [

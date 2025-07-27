@@ -22,15 +22,17 @@ Route::post('/forgot-password/send-code', [AuthController::class, 'sendPasswordR
 Route::post('/forgot-password/verify-code', [AuthController::class, 'verifyPasswordCode']);
 Route::post('/forgot-password/reset', [AuthController::class, 'resetPassword']);
 
+Route::apiResource('categories', CategoryController::class);
+Route::apiResource('brands', BrandController::class);
+Route::apiResource('products', ProductController::class);
+Route::get('products/filter/by/category/{categoryId}', [ProductController::class, 'filterByCategory']);
+
 // Authenticated routes - only accessible with valid token
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [AuthController::class, 'getOwnUser']);
     Route::get('/users', [AuthController::class, 'index']);
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/refresh', [AuthController::class, 'refresh']);
-    Route::apiResource('categories', CategoryController::class);
-    Route::apiResource('brands', BrandController::class);
-    Route::apiResource('products', ProductController::class);
     Route::apiResource('product-variants', ProductVarientController::class);
     Route::get('/products/{product}/photos', [ProductPhotoController::class, 'index']);
     Route::post('/products/{product}/photos', [ProductPhotoController::class, 'store']);
@@ -51,4 +53,3 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/get/communes/{district_id}', [AddressController::class, 'getCommunes']);
     Route::apiResource('addresses', AddressController::class);
 });
-

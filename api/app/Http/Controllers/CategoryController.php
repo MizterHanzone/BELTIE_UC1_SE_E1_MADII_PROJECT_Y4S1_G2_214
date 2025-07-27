@@ -16,7 +16,7 @@ class CategoryController extends Controller
     {
         try {
             // Sort new data to the top
-            $categories = Category::get();
+            $categories = Category::orderBy('id', 'desc')->get();
 
             // Map data
             $data = $categories->map(function ($category) {

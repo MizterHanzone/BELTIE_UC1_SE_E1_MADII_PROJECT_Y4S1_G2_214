@@ -5,7 +5,6 @@ import 'package:one_hub_collection_app/presentation/screens/home_screen.dart';
 import 'package:one_hub_collection_app/presentation/screens/login_screen.dart';
 import 'package:one_hub_collection_app/presentation/screens/navigate_screen.dart';
 import 'package:one_hub_collection_app/presentation/screens/product_detail_screen.dart';
-import 'package:one_hub_collection_app/presentation/screens/product_filter_screen.dart';
 import 'package:one_hub_collection_app/presentation/screens/profile_screen.dart';
 import 'package:one_hub_collection_app/presentation/screens/register_screen.dart';
 import 'package:one_hub_collection_app/presentation/screens/reset_password_screen.dart';
@@ -40,7 +39,6 @@ class AppRoutes {
     GetPage(name: favorite, page: () => FavoriteScreen()),
     GetPage(name: cart, page: () => CartScreen()),
     GetPage(name: profile, page: () => ProfileScreen()),
-    GetPage(name: productFilter, page: () => ProductFilterScreen()),
     GetPage(name: productDetail, page: () => ProductDetailScreen()),
   ];
 }

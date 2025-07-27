@@ -27,7 +27,6 @@ class ProductController extends Controller
                 if ($category->products->isEmpty()) return null;
 
                 return [
-                    'category_id' => $category->id,
                     'category_name' => $category->name,
                     'category_description' => $category->description,
                     'products' => $category->products->map(function ($product) {
@@ -37,7 +36,7 @@ class ProductController extends Controller
                             'description' => $product->description,
                             'price' => $product->price,
                             'quantity' => $product->quantity,
-                            'photo' => $product->photo ? asset('storage/' . $product->photo) : null,
+                            'photo' => $product->photo ? $product->photo : null,
                         ];
                     }),
                 ];
@@ -189,4 +188,52 @@ class ProductController extends Controller
             ], 500);
         }
     }
+
+    public function filterByCategory(Request $request, $categoryId)
+    {
+        $category = Category::find($categoryId);
+
+        if (!$category) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Category not found.',
+            ], 404);
+        }
+
+        $query = Product::where('category_id', $categoryId);
+
+        if ($request->has('search') && !empty($request->search)) {
+            $searchTerm = strtolower($request->search);
+            $query->where(function ($q) use ($searchTerm) {
+                $q->whereRaw('LOWER(name) LIKE ?', ["%{$searchTerm}%"])
+                    ->orWhereRaw('LOWER(description) LIKE ?', ["%{$searchTerm}%"]);
+            });
+        }
+
+        $products = $query->with('brand')->get();
+
+        $data = $products->map(function ($product) {
+            return [
+                'id' => $product->id,
+                'name' => $product->name,
+                'description' => $product->description,
+                'price' => $product->price,
+                'photo' => $product->photo,
+                'brand' => $product->brand ? $product->brand->name : null,
+                'category' => $product->category->name,
+                'category_id' => $product->category ? $product->category->id : null,
+            ];
+        });
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Products retrieved successfully!',
+            'category' => [
+                'name' => $category->name,
+                'photo' => $category->photo,
+            ],
+            'products' => $data,
+        ]);
+    }
+
 }
