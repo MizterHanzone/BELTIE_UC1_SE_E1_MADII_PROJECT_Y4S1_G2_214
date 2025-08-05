@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "971780003319",
+    "project_id": "gocery-auth",
+    "storage_bucket": "gocery-auth.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:971780003319:android:970b9abcd5263b0f7bcaf2",
+        "android_client_info": {
+          "package_name": "com.example.online_grocery_delivery_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDbESHQzsaPU2kW53Vl2n-sVpnGVAC65EM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

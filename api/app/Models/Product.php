@@ -12,12 +12,17 @@ class Product extends Model
     protected $fillable = [
         'name',
         'description',
+        'bar_code',
+        'photo',
         'price',
         'quantity',
-        'photo',
+        'uom',
+        'is_active',
         'category_id',
+        'brand_id',
+        'user_id',
     ];
-    protected $table = 'products';
+    
     public function category()
     {
         return $this->belongsTo(Category::class);
@@ -26,25 +31,20 @@ class Product extends Model
     {
         return $this->belongsTo(Brand::class);
     }
-    public function photos()
-    {
-        return $this->hasMany(ProductPhoto::class);
-    }
-    public function variants()
-    {   
-        return $this->hasMany(ProductVarient::class);
-    }
-    public function orderItems()
-    {
-        return $this->hasMany(OrderItem::class);
-    }
+
     public function favorites()
     {
         return $this->hasMany(Favorite::class);
     }
-    public function cartItems()
+
+    public function user()
     {
-        return $this->hasMany(CartItem::class);
+        return $this->belongsTo(User::class);
+    }
+
+    public function orderItems()
+    {
+        return $this->hasMany(OrderItem::class);
     }
     
 }

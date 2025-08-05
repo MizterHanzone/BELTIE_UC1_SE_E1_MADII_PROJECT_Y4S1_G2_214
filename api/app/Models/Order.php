@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -9,38 +10,50 @@ class Order extends Model
 {
     //
     use HasFactory;
+
     protected $fillable = [
         'user_id',
         'cart_id',
+        'payment_id',
         'address_id',
-        'payment_method_id',
-        'order_number',
-        'delivery_fee',
         'total_amount',
-        'status'
+        'status',
     ];
-    protected $casts = [
-        'delivery_fee' => 'decimal:2',
-        'total_amount' => 'decimal:2',
-    ]; 
+
     public function user()
     {
         return $this->belongsTo(User::class);
     }
+
     public function cart()
     {
         return $this->belongsTo(Cart::class);
     }
+
+    public function payment()
+    {
+        return $this->belongsTo(Payment::class);
+    }
+
+    public function orderItems()
+    {
+        return $this->hasMany(OrderItem::class);
+    }
+
     public function address()
     {
         return $this->belongsTo(Address::class);
     }
-    public function paymentMethod()
+
+    public function transactions()
     {
-        return $this->belongsTo(PaymentMethod::class);
+        return $this->hasMany(Transaction::class);
     }
-    public function orderItems()
+
+    protected function totalQuantity(): Attribute
     {
-        return $this->hasMany(OrderItem::class);
+        return Attribute::make(
+            get: fn () => $this->orderItems->sum('quantity'),
+        );
     }
 }

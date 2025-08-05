@@ -23,6 +23,7 @@ class User extends Authenticatable
         'last_name',
         'email',
         'phone',
+        'photo',
         'password',
         'role',
         'email_verified_at',
@@ -51,60 +52,44 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
-    /**
-     * Get the user's full name.
-     *
-     * @return string
-     */
-    public function getFullNameAttribute(): string
-    {
-        return trim("{$this->first_name} {$this->last_name}");
-    }
-    /**
-     * Get the user's addresses.
-     */
-    public function addresses()
-    {
-        return $this->hasMany(Address::class);
-    }
-    /**
-     * Get the user's cart.
-     */
-    public function cart()
-    {
-        return $this->hasOne(Cart::class);
-    }
-    /**
-     * Get the user's favorites.
-     */
+
     public function favorites()
     {
         return $this->hasMany(Favorite::class);
     }
-    public function orders()
+
+    public function categories()
     {
-        return $this->hasMany(Order::class);
+        return $this->hasMany(Category::class);
     }
-    /**
-     * Get the user's payment methods.
-     */
-    public function paymentMethods()
+
+    public function brands()
     {
-        return $this->hasMany(PaymentMethod::class);
-    }
-    /**
-     * Get the user's cart items.
-     */
-    public function cartItems()
-    {
-        return $this->hasMany(CartItem::class);
-    }
-    /**
-     * Get the user's order items.
-     */
-    public function orderItems()
-    {
-        return $this->hasMany(OrderItem::class);
+        return $this->hasMany(Brand::class);
     }
     
+    public function products()
+    {
+        return $this->hasMany(Product::class);
+    }
+
+    public function advertisements()
+    {
+        return $this->hasMany(Advertise::class);
+    }
+
+    public function addresses()
+    {
+        return $this->hasMany(Address::class);
+    }
+
+    public function carts()
+    {
+        return $this->hasMany(Cart::class);
+    }
+    
+
+    public function order(){
+        return $this->hasMany(Order::class);
+    }
 }
