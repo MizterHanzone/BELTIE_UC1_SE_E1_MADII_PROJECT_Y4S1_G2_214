@@ -14,32 +14,29 @@ class Address extends Model
         'province_id',
         'district_id',
         'commune_id',
+        'village',
         'street',
-        'description',
+        'house_number',
     ];
-    protected $hidden = [
-        'created_at',
-        'updated_at',
-    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);
     }
+
     public function province()
     {
         return $this->belongsTo(Province::class);
     }
+
     public function district()
-    {       
-         return $this->belongsTo(District::class);
+    {
+        return $this->belongsTo(District::class);
     }
+
     public function commune()
     {
-       return $this->belongsTo(Commune::class);
-    }
-    public function orders()
-    {
-        return $this->hasMany(Order::class);
+        return $this->belongsTo(Commune::class);
     }
 
 }

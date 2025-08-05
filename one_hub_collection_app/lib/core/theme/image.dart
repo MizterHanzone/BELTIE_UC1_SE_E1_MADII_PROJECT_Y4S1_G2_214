@@ -1,1 +1,0 @@
-const logoApp = "assets/images/logo.png";

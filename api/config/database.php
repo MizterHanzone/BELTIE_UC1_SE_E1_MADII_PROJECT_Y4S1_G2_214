@@ -111,6 +111,20 @@ return [
             // 'encrypt' => env('DB_ENCRYPT', 'yes'),
             // 'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'false'),
         ],
+        'oracle' => [
+            'driver'         => 'oracle',
+            'host'           => env('DB_HOST', '127.0.0.1'),
+            'port'           => env('DB_PORT', '1521'),
+            'database'       => env('DB_SID', 'orcl'), 
+            'sid'            => env('DB_SID', 'orcl'), 
+            'username'       => env('DB_USERNAME', 'C##GROCERY'),
+            'password'       => env('DB_PASSWORD', 'OGDA2025'),
+            'charset'        => 'AL32UTF8',
+            'prefix'         => '',
+            'prefix_schema'  => env('DB_SCHEMA_PREFIX', ''),
+            'edition'        => env('DB_EDITION', 'ora$base'),
+            'server_version' => env('DB_SERVER_VERSION', '11g'),
+        ],
 
     ],
 

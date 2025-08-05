@@ -13,14 +13,11 @@ class PasswordResetCodeMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $code;
-
     /**
      * Create a new message instance.
      */
     public function __construct($code)
     {
-        //
         $this->code = $code;
     }
 
@@ -33,6 +30,16 @@ class PasswordResetCodeMail extends Mailable
             subject: 'Password Reset Code Mail',
         );
     }
+
+    /**
+     * Get the message content definition.
+     */
+    // public function content(): Content
+    // {
+    //     return new Content(
+    //         view: 'view.name',
+    //     );
+    // }
 
     public function build()
     {
